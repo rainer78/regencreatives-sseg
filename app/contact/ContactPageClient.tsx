@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
+import { contactSubmissionSchema } from "@/lib/contact-schema"
 
 export default function ContactPageClient() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
@@ -19,18 +20,73 @@ export default function ContactPageClient() {
     phone: "",
     message: "",
   })
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string[] | undefined>>({})
+  const [formError, setFormError] = useState<string | null>(null)
+  const [submitSuccess, setSubmitSuccess] = useState<string | null>(null)
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    // Handle form submission
-    console.log("Form submitted:", formData)
+    setFormError(null)
+    setSubmitSuccess(null)
+
+    const parsed = contactSubmissionSchema.safeParse(formData)
+
+    if (!parsed.success) {
+      setFieldErrors(parsed.error.flatten().fieldErrors)
+      return
+    }
+
+    setFieldErrors({})
+    setIsSubmitting(true)
+
+    try {
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(parsed.data),
+      })
+
+      const payload = await response.json()
+
+      if (!response.ok) {
+        if (payload?.error?.fieldErrors) {
+          setFieldErrors(payload.error.fieldErrors)
+        }
+
+        setFormError(payload?.error?.message || "Unable to submit the form right now.")
+        return
+      }
+
+      setFormData({
+        name: "",
+        email: "",
+        phone: "",
+        message: "",
+      })
+      setSubmitSuccess(payload?.data?.message || "Your message was sent successfully.")
+    } catch {
+      setFormError("Network error. Please try again.")
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value,
+      [name]: value,
     })
+
+    if (fieldErrors[name]) {
+      setFieldErrors((current) => ({
+        ...current,
+        [name]: undefined,
+      }))
+    }
   }
 
   return (
@@ -222,8 +278,10 @@ export default function ContactPageClient() {
                           onChange={handleChange}
                           required
                           aria-required="true"
+                          aria-invalid={Boolean(fieldErrors.name?.length)}
                           className="focus:ring-2 focus:ring-ring"
                         />
+                        {fieldErrors.name?.[0] && <p className="mt-1 text-sm text-destructive">{fieldErrors.name[0]}</p>}
                       </div>
                       <div>
                         <label htmlFor="email" className="block text-sm font-medium text-foreground mb-2">
@@ -237,8 +295,10 @@ export default function ContactPageClient() {
                           onChange={handleChange}
                           required
                           aria-required="true"
+                          aria-invalid={Boolean(fieldErrors.email?.length)}
                           className="focus:ring-2 focus:ring-ring"
                         />
+                        {fieldErrors.email?.[0] && <p className="mt-1 text-sm text-destructive">{fieldErrors.email[0]}</p>}
                       </div>
                     </div>
                     <div>
@@ -251,8 +311,10 @@ export default function ContactPageClient() {
                         name="phone"
                         value={formData.phone}
                         onChange={handleChange}
+                        aria-invalid={Boolean(fieldErrors.phone?.length)}
                         className="focus:ring-2 focus:ring-ring"
                       />
+                      {fieldErrors.phone?.[0] && <p className="mt-1 text-sm text-destructive">{fieldErrors.phone[0]}</p>}
                     </div>
                     <div>
                       <label htmlFor="message" className="block text-sm font-medium text-foreground mb-2">
@@ -266,12 +328,17 @@ export default function ContactPageClient() {
                         onChange={handleChange}
                         required
                         aria-required="true"
+                        aria-invalid={Boolean(fieldErrors.message?.length)}
                         className="focus:ring-2 focus:ring-ring"
                       />
+                      {fieldErrors.message?.[0] && <p className="mt-1 text-sm text-destructive">{fieldErrors.message[0]}</p>}
                     </div>
-                    <Button type="submit" size="lg" className="w-full sm:w-auto">
+                    {formError && <p className="text-sm text-destructive">{formError}</p>}
+                    {submitSuccess && <p className="text-sm text-emerald-600">{submitSuccess}</p>}
+
+                    <Button type="submit" size="lg" className="w-full sm:w-auto" disabled={isSubmitting}>
                       <Send className="h-4 w-4 mr-2" />
-                      Send Message
+                      {isSubmitting ? "Sending..." : "Send Message"}
                     </Button>
                   </form>
                 </CardContent>

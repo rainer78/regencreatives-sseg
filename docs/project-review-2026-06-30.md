@@ -17,9 +17,9 @@ The strongest current direction is an educational interactive model / guided tou
 
 ## Solar System Experience Findings
 
-- The `/solar-system` route loads a full-screen black 3D scene with a loading overlay, a top-right hover menu, a hidden top-left VR container, a bottom-left information panel, a central tour panel, a guided-tour overlay, and a help launcher.
+- The `/solar-system` route loads a full-screen black 3D scene with a loading overlay, a top-right hover menu, a hidden top-left VR container, a bottom-left information panel, a central Solar System Tour panel, a Controls Walkthrough overlay, and a help launcher.
 - The scene is procedurally built from hard-coded planet, moon, asteroid, and Oort Cloud data in one large component.
-- Users can rotate, zoom, pan, adjust speed, pause animation, reset view, hide orbit rings, click objects for information, enter fullscreen, and start tours.
+- Users can rotate, zoom, pan, adjust speed, pause animation, reset view, hide orbit rings, click objects for information, enter fullscreen, start the Controls Walkthrough, and start the Solar System Tour.
 - There is no obvious label system in the 3D scene, so object recognition depends on user clicking and interpreting the info panel.
 - The Oort Cloud is represented by tens of thousands of individual meshes at very large distances, which is visually ambitious but technically expensive.
 - The top-right control menu only appears on hover. This can be hard to discover, inaccessible on touch devices, and fragile for users who need persistent controls.
@@ -29,7 +29,7 @@ The strongest current direction is an educational interactive model / guided tou
 - The app builds successfully with `pnpm build`.
 - The route structure is simple and understandable: `app/page.tsx` owns the homepage and `app/solar-system/page.tsx` owns the 3D experience route.
 - The 3D scene initializes from client-side code and provides real interactions rather than being only a static landing page.
-- Basic onboarding exists through `TourLauncher`, `GuidedTour`, and the in-scene tour UI.
+- Basic onboarding exists through `ControlsWalkthroughLauncher`, `ControlsWalkthrough`, and the in-scene Solar System Tour UI.
 - The homepage already has a coherent visual tone and a clear primary CTA into the experience.
 - The simulation has a useful foundation: planet data, moon data, orbit controls, speed control, click-to-info, reset view, and educational snippets.
 
@@ -37,8 +37,8 @@ The strongest current direction is an educational interactive model / guided tou
 
 - The homepage promises features that are not visibly complete, especially AR support, realistic rendering, and a demo video.
 - The project name in `package.json` is still `my-v0-project`, which makes the codebase feel scaffolded rather than productized.
-- There are two guided-tour systems: a React overlay guided tour and an imperative Three.js camera tour. They share UI IDs and start mechanisms in confusing ways.
-- The guided tour references `#controls`, but the current controls wrapper does not define that ID, so at least one guided-tour highlight target cannot resolve.
+- There are two tour-related systems: a React Controls Walkthrough and an imperative Three.js Solar System Tour. They share UI IDs and start mechanisms in confusing ways.
+- The Controls Walkthrough references `#controls`, so the controls wrapper ID is part of the walkthrough contract.
 - The VR button container is intentionally `opacity-0`, and the current code does not import or create Three.js `VRButton`, enable `renderer.xr`, or provide a clear unsupported-browser fallback.
 - The “Enter VR” menu action queries `#vr-button button`, but no button is injected by the current scene code.
 - The solar system scene uses many imperative DOM event listeners inside React components. This makes cleanup, testing, accessibility, and future refactors harder.
@@ -58,10 +58,10 @@ The strongest current direction is an educational interactive model / guided tou
 - Homepage file: `app/page.tsx`.
 - Solar system route file: `app/solar-system/page.tsx`.
 - Main 3D scene file: `components/solar-system-3d.tsx`.
-- React guided tour files: `components/guided-tour.tsx`, `components/tour-launcher.tsx`, `hooks/use-tour.ts`, and `data/tour-steps.ts`.
+- React Controls Walkthrough files: `components/controls-walkthrough.tsx`, `components/controls-walkthrough-launcher.tsx`, `hooks/use-tour.ts`, and `data/controls-walkthrough-steps.ts`.
 - `components/solar-system-3d.tsx` is the highest-priority technical debt area. It is large, imperative, hard-coded, and directly manipulates DOM elements by ID.
 - `app/solar-system/page.tsx` contains UI IDs that the scene component depends on, which creates tight coupling between page markup and scene logic.
-- `data/tour-steps.ts` is a good start toward separating content from UI, but the scene has its own separate tour data array that duplicates this concept.
+- `data/controls-walkthrough-steps.ts` is a good start toward separating content from UI, but the scene has its own separate tour data array that duplicates this concept.
 - `testing/` contains report-like TSX files rather than an executable test setup. The repository does not currently have a dedicated `test` script.
 - Safe refactors for a later phase: extract data into `data/solar-system.ts`, extract scene initialization helpers, consolidate tour systems, move UI state into React, and replace CDN Three.js scripts with package imports.
 - Parts to leave alone initially: the full rendering model, object counts, controls behavior, and visual redesign should not be changed until baseline behavior is documented and preserved.
@@ -83,7 +83,7 @@ The strongest current direction is an educational interactive model / guided tou
 - The quick controls are useful but buried inside the hover menu.
 - Mobile/touch users may struggle because the control menu depends on hover and the controls copy is mouse-specific.
 - Click-to-info is useful, but planets have no persistent labels, selection feedback, or “you clicked X” visual cue in the scene itself.
-- The two tour systems can conflict conceptually: one teaches UI controls, the other moves through celestial bodies. These should be named and separated clearly, such as “Controls walkthrough” and “Solar system tour.”
+- The two tour systems can conflict conceptually: one teaches UI controls, the other moves through celestial bodies. These should be named and separated clearly, such as “Controls Walkthrough” and “Solar System Tour.”
 - There is no homepage link back from the experience and no obvious exit control other than browser navigation.
 
 ## Educational Content Findings
@@ -132,8 +132,8 @@ The homepage should support this direction by setting expectations honestly: sta
 1. Make controls discoverable without hover-only behavior.
 2. Add a visible “Start guided tour” entry point in the scene.
 3. Add a back/home button.
-4. Separate “controls walkthrough” from “celestial body tour.”
-5. Fix missing guided-tour selector targets such as `#controls`.
+4. Separate “Controls Walkthrough” from “Solar System Tour.”
+5. Preserve Controls Walkthrough selector targets such as `#controls`.
 
 ### D. VR/WebXR improvements
 

@@ -3,7 +3,7 @@
 import { useEffect, useState, useRef } from "react"
 import { X, ChevronLeft, ChevronRight } from "lucide-react"
 
-interface TourStep {
+interface ControlsWalkthroughStep {
   id: string
   title: string
   description: string
@@ -14,15 +14,15 @@ interface TourStep {
   delay?: number
 }
 
-interface GuidedTourProps {
-  steps: TourStep[]
+interface ControlsWalkthroughProps {
+  steps: ControlsWalkthroughStep[]
   isActive: boolean
   onStart: () => void
   onComplete: () => void
   onSkip: () => void
 }
 
-export default function GuidedTour({ steps, isActive, onStart, onComplete, onSkip }: GuidedTourProps) {
+export default function ControlsWalkthrough({ steps, isActive, onStart, onComplete, onSkip }: ControlsWalkthroughProps) {
   const [currentStep, setCurrentStep] = useState(0)
   const [isVisible, setIsVisible] = useState(false)
   const [tooltipPosition, setTooltipPosition] = useState({ x: 0, y: 0 })
@@ -120,7 +120,7 @@ export default function GuidedTour({ steps, isActive, onStart, onComplete, onSki
     if (currentStep < steps.length - 1) {
       setCurrentStep(currentStep + 1)
     } else {
-      completeTour()
+      completeWalkthrough()
     }
   }
 
@@ -130,12 +130,12 @@ export default function GuidedTour({ steps, isActive, onStart, onComplete, onSki
     }
   }
 
-  const completeTour = () => {
+  const completeWalkthrough = () => {
     setIsVisible(false)
     onComplete()
   }
 
-  const skipTour = () => {
+  const skipWalkthrough = () => {
     setIsVisible(false)
     onSkip()
   }
@@ -155,14 +155,14 @@ export default function GuidedTour({ steps, isActive, onStart, onComplete, onSki
       {/* Overlay */}
       <div
         ref={overlayRef}
-        className="fixed inset-0 bg-black bg-opacity-50 z-[9998]"
+        className="fixed inset-0 z-40 bg-black bg-opacity-50"
         style={{ pointerEvents: "none" }}
       />
 
       {/* Highlight */}
       {step.highlight && step.target && (
         <div
-          className="fixed border-2 border-blue-400 rounded-lg shadow-lg z-[9999] pointer-events-none"
+          className="pointer-events-none fixed z-50 rounded-lg border-2 border-blue-400 shadow-lg"
           style={{
             left: highlightPosition.x,
             top: highlightPosition.y,
@@ -177,32 +177,32 @@ export default function GuidedTour({ steps, isActive, onStart, onComplete, onSki
       {/* Tooltip */}
       <div
         ref={tooltipRef}
-        className="fixed bg-white rounded-lg shadow-xl border border-gray-200 p-6 max-w-sm z-[10000]"
+        className="fixed z-50 max-h-[82vh] w-[calc(100vw-1.5rem)] max-w-sm overflow-y-auto rounded-lg border border-gray-200 bg-white p-4 shadow-xl sm:p-6"
         style={{
           left: tooltipPosition.x,
           top: tooltipPosition.y,
           transform: "translate(0, 0)",
         }}
         role="dialog"
-        aria-labelledby="tour-title"
-        aria-describedby="tour-description"
+        aria-labelledby="controls-walkthrough-title"
+        aria-describedby="controls-walkthrough-description"
       >
         {/* Header */}
         <div className="flex items-center justify-between mb-4">
-          <h3 id="tour-title" className="text-lg font-semibold text-gray-900">
+          <h3 id="controls-walkthrough-title" className="text-lg font-semibold text-gray-900">
             {step.title}
           </h3>
           <button
-            onClick={skipTour}
+            onClick={skipWalkthrough}
             className="text-gray-400 hover:text-gray-600 transition-colors"
-            aria-label="Close tour"
+            aria-label="Close Controls Walkthrough"
           >
             <X size={20} />
           </button>
         </div>
 
         {/* Content */}
-        <p id="tour-description" className="text-gray-700 mb-6 leading-relaxed">
+        <p id="controls-walkthrough-description" className="text-gray-700 mb-6 leading-relaxed">
           {step.description}
         </p>
 
@@ -250,7 +250,7 @@ export default function GuidedTour({ steps, isActive, onStart, onComplete, onSki
           <button
             onClick={nextStep}
             className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-blue-500 rounded-md hover:bg-blue-600 transition-colors"
-            aria-label={currentStep === steps.length - 1 ? "Complete tour" : "Next step"}
+            aria-label={currentStep === steps.length - 1 ? "Complete Controls Walkthrough" : "Next Controls Walkthrough step"}
           >
             {currentStep === steps.length - 1 ? "Complete" : "Next"}
             <ChevronRight size={16} />
@@ -265,7 +265,7 @@ export default function GuidedTour({ steps, isActive, onStart, onComplete, onSki
 
       {/* Keyboard navigation */}
       <div
-        className="fixed inset-0 z-[9997]"
+        className="fixed inset-0 z-40"
         onKeyDown={(e) => {
           switch (e.key) {
             case "ArrowRight":
@@ -279,7 +279,7 @@ export default function GuidedTour({ steps, isActive, onStart, onComplete, onSki
               break
             case "Escape":
               e.preventDefault()
-              skipTour()
+              skipWalkthrough()
               break
           }
         }}

@@ -209,3 +209,11 @@ For the next visual pass, do not change:
 - Object loading behavior, CDN script loading behavior, or dependency set.
 - API fetching, external data loading, API tokens, or runtime asset hotlinking.
 - Asteroid/Oort object counts until a dedicated performance refactor is planned.
+
+## Implementation note: first material and lighting upgrade (2026-06-30)
+
+The first visual upgrade keeps the existing procedural scene structure and changes only material and lighting treatment in `components/solar-system-3d.tsx`. Planets and moons now use conservative lighting-aware `MeshStandardMaterial` settings with existing colors, while orbit paths, asteroid belt objects, Oort Cloud objects, and star points remain on lightweight flat materials. The Sun now uses an emissive `MeshStandardMaterial` and remains the central point-light source so it reads more clearly as a star without adding bloom, post-processing, particles, textures, or model assets.
+
+No assets, textures, GLB/GLTF models, dependencies, or API behavior were added or changed. The implementation preserves existing positions, scale values, orbit behavior, camera behavior, animation behavior, tour sequencing, loading behavior, VR/WebXR setup, and celestial object counts.
+
+Manual review should verify that planets remain visible on mobile-sized screens, the Sun is visually distinct without overpowering nearby objects, orbit paths remain readable, Saturn's ring still functions as a simple silhouette cue, and the asteroid belt/Oort Cloud performance profile is not worsened by this targeted pass.

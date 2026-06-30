@@ -1,17 +1,17 @@
-export const solarSystemTourSteps = [
+export const controlsWalkthroughSteps = [
   {
     id: "welcome",
-    title: "Welcome to Solar System Explorer",
+    title: "Controls Walkthrough",
     description:
-      "Welcome! This interactive 3D solar system lets you explore planets, moons, and other celestial objects. Let's take a quick tour of the features.",
+      "This short walkthrough explains how to use the page controls. The separate Solar System Tour button moves you through planets, moons, and other objects.",
     position: "center" as const,
     highlight: false,
   },
   {
     id: "controls-panel",
-    title: "Control Panel",
+    title: "Controls Menu",
     description:
-      "Here you'll find all the main controls. You can adjust simulation speed, pause the animation, reset the view, and toggle orbit visibility.",
+      "Open this menu for scene controls such as speed, pause, reset view, orbit visibility, fullscreen, and the guided Solar System Tour.",
     target: "#controls",
     position: "left" as const,
     highlight: true,
@@ -53,19 +53,19 @@ export const solarSystemTourSteps = [
     highlight: true,
   },
   {
-    id: "guided-tour",
-    title: "Guided Tour",
+    id: "solar-system-tour-entry",
+    title: "Solar System Tour",
     description:
-      "This button starts a comprehensive tour that visits every planet, moon, and major feature in the solar system with detailed information.",
+      "This starts the separate celestial-body tour. Use it when you want the experience to guide you through planets, moons, and major features.",
     target: "#start-tour",
     position: "left" as const,
     highlight: true,
   },
   {
     id: "vr-mode",
-    title: "Virtual Reality",
+    title: "VR Availability",
     description:
-      "If you have a VR headset, click this button to experience the solar system in immersive virtual reality. Note that VR mode may not be available on all devices.",
+      "You can try VR from the controls menu when your browser and device support it. Availability depends on your setup.",
     target: "#vr-button",
     position: "top" as const,
     highlight: true,
@@ -74,7 +74,7 @@ export const solarSystemTourSteps = [
     id: "info-panel",
     title: "Information Panel",
     description:
-      "When you click on any planet or moon, detailed information appears here. This panel shows the name and fascinating facts about the selected object.",
+      "Click a planet, moon, or other selectable object to open facts here. Close the panel when you want more room to explore.",
     target: "#info",
     position: "right" as const,
     highlight: true,
@@ -105,9 +105,9 @@ export const solarSystemTourSteps = [
   },
   {
     id: "complete",
-    title: "Tour Complete!",
+    title: "Walkthrough Complete!",
     description:
-      "You're now ready to explore the solar system! Try clicking on different objects, adjusting the speed, or starting the comprehensive guided tour for a detailed journey through space.",
+      "You're ready to explore. Click objects for facts, use the controls menu for view options, or start the Solar System Tour for a guided path through space.",
     position: "center" as const,
     highlight: false,
   },

@@ -1,17 +1,25 @@
 "use client"
 
+import Link from "next/link"
 import { useEffect, useState } from "react"
 import { useTour } from "@/hooks/use-tour"
-import { solarSystemTourSteps } from "@/data/tour-steps"
-import GuidedTour from "@/components/guided-tour"
-import TourLauncher from "@/components/tour-launcher"
+import { controlsWalkthroughSteps } from "@/data/controls-walkthrough-steps"
+import ControlsWalkthrough from "@/components/controls-walkthrough"
+import ControlsWalkthroughLauncher from "@/components/controls-walkthrough-launcher"
 import SolarSystem3D from "@/components/solar-system-3d"
 
 export default function SolarSystemPage() {
-  const { isActive, hasCompletedBefore, startTour, completeTour, skipTour } = useTour({
-    steps: solarSystemTourSteps,
+  const {
+    isActive: isControlsWalkthroughActive,
+    hasCompletedBefore: hasCompletedControlsWalkthrough,
+    startTour: startControlsWalkthrough,
+    completeTour: completeControlsWalkthrough,
+    skipTour: skipControlsWalkthrough,
+  } = useTour({
+    steps: controlsWalkthroughSteps,
     autoStart: false,
     localStorage: true,
+    // Keep the legacy key so returning users do not see the Controls Walkthrough again unexpectedly.
     storageKey: "solar-system-tour-completed",
   })
 
@@ -72,12 +80,35 @@ export default function SolarSystemPage() {
       {/* Main 3D Solar System */}
       <SolarSystem3D />
 
+      {/* Entry orientation */}
+      <section
+        aria-labelledby="solar-system-intro-title"
+        className="fixed left-3 right-20 top-3 z-20 max-h-[34vh] overflow-y-auto rounded-2xl border border-slate-700/60 bg-slate-950/85 p-3 text-white shadow-2xl backdrop-blur-xl sm:left-6 sm:right-auto sm:top-6 sm:max-h-[42vh] sm:max-w-sm sm:p-4"
+      >
+        <Link
+          href="/"
+          className="mb-2 inline-flex min-h-10 items-center gap-2 rounded-full border border-blue-400/40 bg-blue-500/10 px-3 py-1.5 text-sm font-medium text-blue-100 transition-colors hover:bg-blue-500/20 focus:outline-none focus:ring-2 focus:ring-blue-300 sm:mb-3"
+          aria-label="Back to homepage"
+        >
+          ← Back to homepage
+        </Link>
+        <h1 id="solar-system-intro-title" className="text-base font-bold text-white sm:text-lg">
+          Interactive Solar System Explorer
+        </h1>
+        <p className="mt-2 text-xs leading-relaxed text-slate-200 sm:text-sm">
+          Explore this browser-based 3D solar system. Drag to look around, scroll to zoom, and click a planet or moon to view facts.
+        </p>
+        <p className="mt-2 text-xs leading-relaxed text-slate-300 sm:text-sm">
+          Open the Controls menu for scene options, or use Start Solar System Tour for the guided object tour.
+        </p>
+      </section>
+
       {/* Enhanced Waffle Menu with All Controls */}
-      <div className="fixed top-6 right-6 z-10">
+      <div id="controls" className="fixed right-3 top-3 z-30 sm:right-6 sm:top-6">
         <div className="relative group">
           {/* Waffle Icon Button */}
-          <button className="bg-gradient-to-br from-slate-900/95 to-slate-800/95 backdrop-blur-xl text-white p-4 rounded-2xl border border-slate-700/50 shadow-2xl hover:shadow-blue-500/20 hover:scale-105 transform transition-all duration-300">
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor" className="drop-shadow-sm">
+          <button className="bg-gradient-to-br from-slate-900/95 to-slate-800/95 backdrop-blur-xl text-white min-h-12 min-w-12 p-3 rounded-2xl sm:p-4 border border-slate-700/50 shadow-2xl hover:shadow-blue-500/20 hover:scale-105 transform transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-blue-300" aria-label="Open solar system controls">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" className="drop-shadow-sm">
               <circle cx="5" cy="5" r="2" />
               <circle cx="12" cy="5" r="2" />
               <circle cx="19" cy="5" r="2" />
@@ -91,13 +122,13 @@ export default function SolarSystemPage() {
           </button>
 
           {/* Expanded Controls Menu */}
-          <div className="absolute top-full right-0 mt-3 opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none group-hover:pointer-events-auto transform scale-95 group-hover:scale-100">
-            <div className="bg-gradient-to-br from-slate-900/98 via-slate-800/98 to-slate-900/98 backdrop-blur-xl text-white p-6 rounded-2xl border border-slate-700/50 shadow-2xl min-w-[280px]">
+          <div className="absolute top-full right-0 mt-2 opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-all duration-300 pointer-events-none group-hover:pointer-events-auto group-focus-within:pointer-events-auto transform scale-95 group-hover:scale-100 group-focus-within:scale-100">
+            <div className="max-h-[calc(100vh-5rem)] w-[calc(100vw-1.5rem)] max-w-xs overflow-y-auto rounded-2xl border border-slate-700/50 bg-gradient-to-br from-slate-900/98 via-slate-800/98 to-slate-900/98 p-4 text-white shadow-2xl backdrop-blur-xl sm:min-w-[280px] sm:p-6">
               {/* Header */}
               <div className="flex items-center gap-3 mb-5">
                 <div className="w-3 h-3 bg-gradient-to-r from-blue-400 to-purple-400 rounded-full animate-pulse shadow-lg shadow-blue-400/50"></div>
                 <h3 className="text-lg font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent drop-shadow-sm">
-                  🌌 Solar System Controls
+                  🌌 Controls & Options
                 </h3>
               </div>
 
@@ -146,10 +177,11 @@ export default function SolarSystemPage() {
 
                 <button
                   id="start-tour"
-                  onClick={startTour}
+                  // Existing behavior: React opens the Controls Walkthrough while Three.js listens to this ID for the Solar System Tour.
+                  onClick={startControlsWalkthrough}
                   className="w-full px-4 py-3 bg-gradient-to-r from-yellow-600 to-orange-600 text-white rounded-xl hover:from-yellow-700 hover:to-orange-700 transform hover:scale-105 active:scale-95 transition-all duration-200 shadow-lg hover:shadow-yellow-500/25 font-medium text-sm"
                 >
-                  🚀 Start Tour
+                  🚀 Start Solar System Tour
                 </button>
               </div>
 
@@ -165,7 +197,7 @@ export default function SolarSystemPage() {
                   }}
                   className="block w-full text-left px-4 py-3 hover:bg-gradient-to-r hover:from-cyan-600/20 hover:to-blue-600/20 rounded-xl transition-all duration-200 font-medium text-sm"
                 >
-                  🥽 Enter VR
+                  🥽 Try VR if available
                 </button>
                 <button
                   onClick={() => {
@@ -185,13 +217,15 @@ export default function SolarSystemPage() {
               <div className="mt-4 pt-4 border-t border-slate-600/30">
                 <div className="flex items-center gap-2 mb-2">
                   <div className="w-2 h-2 bg-gradient-to-r from-purple-400 to-pink-400 rounded-full animate-pulse shadow-lg shadow-purple-400/50"></div>
-                  <p className="font-bold text-purple-300 text-sm">Quick Controls:</p>
+                  <p className="font-bold text-purple-300 text-sm">How to interact:</p>
                 </div>
                 <div className="space-y-1 text-xs text-gray-400">
                   <p>🖱️ Click & drag to rotate</p>
                   <p>🔄 Scroll to zoom</p>
                   <p>👆 Right-click & drag to pan</p>
-                  <p>ℹ️ Click objects for info</p>
+                  <p>ℹ️ Click planets or moons for facts</p>
+                  <p>🚀 Use Start Solar System Tour for the guided path</p>
+                  <p>🥽 VR availability depends on your browser and device</p>
                 </div>
               </div>
             </div>
@@ -200,15 +234,15 @@ export default function SolarSystemPage() {
       </div>
 
       {/* Enhanced VR Button (keep this separate for Three.js injection) */}
-      <div id="vr-button" className="fixed top-6 left-6 z-10 opacity-0">
+      <div id="vr-button" className="fixed left-3 top-16 z-10 opacity-0 sm:left-6 sm:top-6">
         <div className="bg-gradient-to-br from-slate-900/95 to-slate-800/95 backdrop-blur-xl p-3 rounded-2xl border border-slate-700/50 shadow-2xl hover:shadow-cyan-500/10 transition-all duration-300">
           {/* VR button will be injected here by Three.js VRButton */}
         </div>
       </div>
 
       {/* Enhanced Information Panel */}
-      <div id="info" className="fixed bottom-6 left-6 max-w-sm z-10" style={{ display: "none" }}>
-        <div className="bg-gradient-to-br from-slate-900/95 via-slate-800/95 to-slate-900/95 backdrop-blur-xl text-white p-6 rounded-2xl border border-slate-700/50 shadow-2xl hover:shadow-blue-500/10 transition-all duration-300">
+      <div id="info" className="fixed bottom-3 left-3 right-3 z-20 max-h-[40vh] overflow-y-auto sm:bottom-6 sm:left-6 sm:right-auto sm:max-w-sm" style={{ display: "none" }}>
+        <div className="bg-gradient-to-br from-slate-900/95 via-slate-800/95 to-slate-900/95 backdrop-blur-xl text-white p-4 rounded-2xl sm:p-6 border border-slate-700/50 shadow-2xl hover:shadow-blue-500/10 transition-all duration-300">
           <div className="flex items-center gap-3 mb-4">
             <div className="w-3 h-3 bg-gradient-to-r from-green-400 to-blue-400 rounded-full animate-pulse shadow-lg shadow-green-400/50"></div>
             <h3
@@ -229,13 +263,13 @@ export default function SolarSystemPage() {
         </div>
       </div>
 
-      {/* Enhanced Tour UI */}
+      {/* Solar System Tour UI controlled by the Three.js scene */}
       <div
         id="tour-ui"
-        className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 max-w-md z-20"
+        className="fixed left-1/2 top-1/2 z-40 max-h-[82vh] w-[calc(100vw-1.5rem)] max-w-md -translate-x-1/2 -translate-y-1/2 transform overflow-y-auto"
         style={{ display: "none" }}
       >
-        <div className="bg-gradient-to-br from-slate-900/98 via-slate-800/98 to-slate-900/98 backdrop-blur-xl text-white p-8 rounded-3xl border border-slate-700/50 shadow-2xl">
+        <div className="bg-gradient-to-br from-slate-900/98 via-slate-800/98 to-slate-900/98 backdrop-blur-xl text-white p-5 rounded-3xl sm:p-8 border border-slate-700/50 shadow-2xl">
           <div className="text-center mb-6">
             <div className="flex items-center justify-center gap-3 mb-4">
               <div className="w-4 h-4 bg-gradient-to-r from-yellow-400 to-orange-400 rounded-full animate-pulse shadow-lg shadow-yellow-400/50"></div>
@@ -251,24 +285,24 @@ export default function SolarSystemPage() {
             ></div>
           </div>
 
-          <div className="flex justify-between gap-3">
+          <div className="flex flex-col justify-between gap-3 sm:flex-row">
             <button
               id="tour-prev"
-              className="px-6 py-3 bg-gradient-to-r from-gray-600 to-gray-700 text-white rounded-xl hover:from-gray-700 hover:to-gray-800 transform hover:scale-105 active:scale-95 transition-all duration-200 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed font-medium"
+              className="px-4 py-3 bg-gradient-to-r from-gray-600 to-gray-700 text-white rounded-xl hover:from-gray-700 hover:to-gray-800 transform hover:scale-105 active:scale-95 transition-all duration-200 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed font-medium"
             >
               ⬅️ Previous
             </button>
 
             <button
               id="tour-end"
-              className="px-6 py-3 bg-gradient-to-r from-red-600 to-red-700 text-white rounded-xl hover:from-red-700 hover:to-red-800 transform hover:scale-105 active:scale-95 transition-all duration-200 shadow-lg hover:shadow-red-500/25 font-medium"
+              className="px-4 py-3 bg-gradient-to-r from-red-600 to-red-700 text-white rounded-xl hover:from-red-700 hover:to-red-800 transform hover:scale-105 active:scale-95 transition-all duration-200 shadow-lg hover:shadow-red-500/25 font-medium"
             >
               🛑 End Tour
             </button>
 
             <button
               id="tour-next"
-              className="px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-xl hover:from-blue-700 hover:to-blue-800 transform hover:scale-105 active:scale-95 transition-all duration-200 shadow-lg hover:shadow-blue-500/25 font-medium"
+              className="px-4 py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-xl hover:from-blue-700 hover:to-blue-800 transform hover:scale-105 active:scale-95 transition-all duration-200 shadow-lg hover:shadow-blue-500/25 font-medium"
             >
               Next ➡️
             </button>
@@ -276,16 +310,19 @@ export default function SolarSystemPage() {
         </div>
       </div>
 
-      {/* Tour Components */}
-      <GuidedTour
-        steps={solarSystemTourSteps}
-        isActive={isActive}
-        onStart={startTour}
-        onComplete={completeTour}
-        onSkip={skipTour}
+      {/* Controls Walkthrough components */}
+      <ControlsWalkthrough
+        steps={controlsWalkthroughSteps}
+        isActive={isControlsWalkthroughActive}
+        onStart={startControlsWalkthrough}
+        onComplete={completeControlsWalkthrough}
+        onSkip={skipControlsWalkthrough}
       />
 
-      <TourLauncher onStartTour={startTour} isVisible={!hasCompletedBefore && !isActive} />
+      <ControlsWalkthroughLauncher
+        onStartWalkthrough={startControlsWalkthrough}
+        isVisible={!hasCompletedControlsWalkthrough && !isControlsWalkthroughActive}
+      />
 
       {/* Add custom CSS styles */}
       <style jsx>{`

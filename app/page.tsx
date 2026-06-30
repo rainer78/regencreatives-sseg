@@ -2,7 +2,7 @@ import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { Rocket, Globe, Eye, Zap, Navigation, Headphones } from "lucide-react"
+import { Rocket, Globe, Eye, Zap, Navigation, Monitor, Info } from "lucide-react"
 
 export default function HomePage() {
   return (
@@ -13,59 +13,57 @@ export default function HomePage() {
         <div className="relative container mx-auto px-4 py-20 text-center">
           <div className="max-w-4xl mx-auto">
             <Badge variant="secondary" className="mb-6 bg-purple-100 text-purple-800">
-              Interactive 3D Experience
+              Browser-Based Space Learning Experience
             </Badge>
             <h1 className="text-5xl md:text-7xl font-bold text-white mb-6 leading-tight">
-              Explore Our
+              Start a Guided
               <span className="bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
                 {" "}
-                Solar System
+                Solar System Tour
               </span>
             </h1>
             <p className="text-xl md:text-2xl text-gray-300 mb-8 leading-relaxed">
-              Journey through space with our immersive 3D visualization. Discover planets, moons, and celestial objects
-              in stunning detail with VR support and guided tours.
+              Explore a browser-based 3D model of planets, moons, dwarf planets, and distant solar system objects.
+              Learn by navigating the scene, clicking objects for facts, and using the built-in tour controls.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link href="/solar-system">
+              <Link href="/solar-system" aria-label="Start the Solar System Tour">
                 <Button
                   size="lg"
                   className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-8 py-4 text-lg"
                 >
                   <Rocket className="mr-2 h-5 w-5" />
-                  Launch Explorer
+                  Start the Solar System Tour
                 </Button>
               </Link>
-              <Button
-                variant="outline"
-                size="lg"
-                className="border-white text-white hover:bg-white hover:text-slate-900 px-8 py-4 text-lg bg-transparent"
-              >
-                <Eye className="mr-2 h-5 w-5" />
-                Watch Demo
-              </Button>
             </div>
+            <p className="mt-5 text-sm text-blue-100/90">
+              Works best in a modern desktop browser. A headset is not required; immersive mode depends on WebXR support
+              from your browser and device.
+            </p>
           </div>
         </div>
       </section>
 
-      {/* Features Section */}
-      <section className="py-20 bg-slate-800/50">
+      {/* Before You Launch Section */}
+      <section className="py-16 bg-slate-800/50">
         <div className="container mx-auto px-4">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-white mb-4">Discover the Universe</h2>
+          <div className="text-center mb-12">
+            <h2 className="text-4xl font-bold text-white mb-4">Before You Launch</h2>
             <p className="text-xl text-gray-300 max-w-2xl mx-auto">
-              Our solar system explorer offers cutting-edge features for an unforgettable cosmic journey
+              The experience is designed to be easy to enter from a regular browser, with optional immersive features
+              only when your setup supports them.
             </p>
           </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid md:grid-cols-3 gap-8">
             <Card className="bg-slate-800 border-slate-700 hover:border-purple-500 transition-colors">
               <CardHeader>
-                <Globe className="h-12 w-12 text-blue-400 mb-4" />
-                <CardTitle className="text-white">Interactive 3D Planets</CardTitle>
+                <Monitor className="h-12 w-12 text-blue-400 mb-4" />
+                <CardTitle className="text-white">Best on Desktop</CardTitle>
                 <CardDescription className="text-gray-300">
-                  Explore all planets, dwarf planets, and major moons with detailed information and realistic rendering
+                  Use a modern desktop browser for the clearest controls. Rotate, zoom, and pan with your mouse or
+                  trackpad.
                 </CardDescription>
               </CardHeader>
             </Card>
@@ -73,30 +71,58 @@ export default function HomePage() {
             <Card className="bg-slate-800 border-slate-700 hover:border-purple-500 transition-colors">
               <CardHeader>
                 <Navigation className="h-12 w-12 text-purple-400 mb-4" />
-                <CardTitle className="text-white">Guided Tours</CardTitle>
+                <CardTitle className="text-white">Guided and Interactive</CardTitle>
                 <CardDescription className="text-gray-300">
-                  Take a comprehensive tour through the solar system with educational content and smooth camera
-                  transitions
+                  Start with the built-in guidance, then explore at your own pace by adjusting speed, toggling orbits,
+                  and clicking objects for short facts.
                 </CardDescription>
               </CardHeader>
             </Card>
 
             <Card className="bg-slate-800 border-slate-700 hover:border-purple-500 transition-colors">
               <CardHeader>
-                <Headphones className="h-12 w-12 text-green-400 mb-4" />
-                <CardTitle className="text-white">VR & AR Ready</CardTitle>
+                <Info className="h-12 w-12 text-green-400 mb-4" />
+                <CardTitle className="text-white">Immersive Mode Varies</CardTitle>
                 <CardDescription className="text-gray-300">
-                  Experience the solar system in virtual and augmented reality for the ultimate immersive experience
+                  VR/WebXR availability depends on your browser and device. You can still explore the tour without a
+                  headset.
+                </CardDescription>
+              </CardHeader>
+            </Card>
+          </div>
+        </div>
+      </section>
+
+      {/* Features Section */}
+      <section className="py-20">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl font-bold text-white mb-4">What You Can Do</h2>
+            <p className="text-xl text-gray-300 max-w-2xl mx-auto">
+              A lightweight space exploration prototype with browser controls, object information, and a guided tour
+              path through the current solar system scene.
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <Card className="bg-slate-800 border-slate-700 hover:border-purple-500 transition-colors">
+              <CardHeader>
+                <Globe className="h-12 w-12 text-blue-400 mb-4" />
+                <CardTitle className="text-white">Explore 3D Objects</CardTitle>
+                <CardDescription className="text-gray-300">
+                  View planets, major moons, dwarf planets, orbit paths, the asteroid belt, and a distant Oort Cloud
+                  representation.
                 </CardDescription>
               </CardHeader>
             </Card>
 
             <Card className="bg-slate-800 border-slate-700 hover:border-purple-500 transition-colors">
               <CardHeader>
-                <Zap className="h-12 w-12 text-yellow-400 mb-4" />
-                <CardTitle className="text-white">Real-time Simulation</CardTitle>
+                <Navigation className="h-12 w-12 text-purple-400 mb-4" />
+                <CardTitle className="text-white">Use Tour Controls</CardTitle>
                 <CardDescription className="text-gray-300">
-                  Watch planets orbit in real-time with adjustable speed controls and pause functionality
+                  Use the available tour and control panel to learn the interface, pause motion, reset your view, and
+                  move through the scene more confidently.
                 </CardDescription>
               </CardHeader>
             </Card>
@@ -104,9 +130,31 @@ export default function HomePage() {
             <Card className="bg-slate-800 border-slate-700 hover:border-purple-500 transition-colors">
               <CardHeader>
                 <Eye className="h-12 w-12 text-red-400 mb-4" />
-                <CardTitle className="text-white">Detailed Information</CardTitle>
+                <CardTitle className="text-white">Click for Short Facts</CardTitle>
                 <CardDescription className="text-gray-300">
-                  Click on any celestial object to learn fascinating facts and scientific details
+                  Select planets, moons, and some space objects to open a brief information panel about what you are
+                  viewing.
+                </CardDescription>
+              </CardHeader>
+            </Card>
+
+            <Card className="bg-slate-800 border-slate-700 hover:border-purple-500 transition-colors">
+              <CardHeader>
+                <Zap className="h-12 w-12 text-yellow-400 mb-4" />
+                <CardTitle className="text-white">Adjust Motion</CardTitle>
+                <CardDescription className="text-gray-300">
+                  Change the simulation speed, pause orbital motion, or hide orbit lines when you want a simpler view.
+                </CardDescription>
+              </CardHeader>
+            </Card>
+
+            <Card className="bg-slate-800 border-slate-700 hover:border-purple-500 transition-colors">
+              <CardHeader>
+                <Monitor className="h-12 w-12 text-cyan-400 mb-4" />
+                <CardTitle className="text-white">No Headset Required</CardTitle>
+                <CardDescription className="text-gray-300">
+                  The primary experience runs in the browser. Immersive features should be treated as device-dependent
+                  rather than guaranteed.
                 </CardDescription>
               </CardHeader>
             </Card>
@@ -114,9 +162,10 @@ export default function HomePage() {
             <Card className="bg-slate-800 border-slate-700 hover:border-purple-500 transition-colors">
               <CardHeader>
                 <Rocket className="h-12 w-12 text-orange-400 mb-4" />
-                <CardTitle className="text-white">Asteroid Belt & Beyond</CardTitle>
+                <CardTitle className="text-white">Educational Prototype</CardTitle>
                 <CardDescription className="text-gray-300">
-                  Explore the asteroid belt, Kuiper belt objects, and the theoretical Oort cloud
+                  This project is a focused interactive learning and portfolio experience, not a finished science
+                  platform or full planetarium replacement.
                 </CardDescription>
               </CardHeader>
             </Card>
@@ -125,12 +174,13 @@ export default function HomePage() {
       </section>
 
       {/* Solar System Preview */}
-      <section className="py-20">
+      <section className="py-20 bg-slate-800/50">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-white mb-4">What You'll Discover</h2>
+            <h2 className="text-4xl font-bold text-white mb-4">What You&apos;ll Explore</h2>
             <p className="text-xl text-gray-300 max-w-2xl mx-auto">
-              From the scorching surface of Mercury to the icy depths of the Oort Cloud
+              Begin with the inner planets, continue through the gas and ice giants, and discover selected moons and
+              distant solar system objects already included in the scene.
             </p>
           </div>
 
@@ -141,9 +191,9 @@ export default function HomePage() {
               { name: "Earth", color: "bg-blue-500", description: "Our home planet" },
               { name: "Mars", color: "bg-red-500", description: "The Red Planet" },
               { name: "Jupiter", color: "bg-yellow-600", description: "Largest planet" },
-              { name: "Saturn", color: "bg-yellow-400", description: "Beautiful rings" },
+              { name: "Saturn", color: "bg-yellow-400", description: "Ringed planet" },
               { name: "Uranus", color: "bg-cyan-400", description: "Tilted ice giant" },
-              { name: "Neptune", color: "bg-blue-600", description: "Windiest planet" },
+              { name: "Neptune", color: "bg-blue-600", description: "Distant ice giant" },
             ].map((planet) => (
               <Card
                 key={planet.name}
@@ -160,18 +210,32 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* Project Note Section */}
+      <section className="py-20">
+        <div className="container mx-auto px-4 text-center">
+          <div className="max-w-3xl mx-auto bg-slate-800/70 border border-slate-700 rounded-3xl p-8 md:p-10">
+            <h2 className="text-4xl font-bold text-white mb-6">About This Experience</h2>
+            <p className="text-xl text-gray-300 leading-relaxed">
+              Solar System Explorer is an interactive educational prototype built to demonstrate a guided 3D space tour
+              on the web. It is intended for exploration and learning, with room for future polish, content review, and
+              device-specific improvements.
+            </p>
+          </div>
+        </div>
+      </section>
+
       {/* CTA Section */}
       <section className="py-20 bg-gradient-to-r from-blue-900 to-purple-900">
         <div className="container mx-auto px-4 text-center">
-          <h2 className="text-4xl font-bold text-white mb-6">Ready to Explore the Cosmos?</h2>
+          <h2 className="text-4xl font-bold text-white mb-6">Ready to Enter the Tour?</h2>
           <p className="text-xl text-gray-200 mb-8 max-w-2xl mx-auto">
-            Embark on an educational journey through our solar system. Perfect for students, educators, and space
-            enthusiasts.
+            Launch the browser experience, follow the on-screen guidance, and explore the current solar system scene at
+            your own pace.
           </p>
-          <Link href="/solar-system">
+          <Link href="/solar-system" aria-label="Launch the Solar System Experience">
             <Button size="lg" className="bg-white text-slate-900 hover:bg-gray-100 px-8 py-4 text-lg font-semibold">
               <Rocket className="mr-2 h-5 w-5" />
-              Start Your Journey
+              Launch the Experience
             </Button>
           </Link>
         </div>
@@ -180,7 +244,7 @@ export default function HomePage() {
       {/* Footer */}
       <footer className="bg-slate-900 py-12">
         <div className="container mx-auto px-4 text-center">
-          <p className="text-gray-400">Built with Three.js, WebXR, and modern web technologies</p>
+          <p className="text-gray-400">Built with Three.js and modern web technologies</p>
           <p className="text-gray-500 mt-2">© 2024 Solar System Explorer. Educational use encouraged.</p>
         </div>
       </footer>

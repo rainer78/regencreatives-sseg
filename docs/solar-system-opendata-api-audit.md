@@ -278,3 +278,13 @@ For this audit and the proposed first safe follow-up, do not change:
 - Dependencies or package-manager files.
 - Client-side environment variables or token-handling code.
 - Browser runtime network behavior. The live app must not fetch the Solar System OpenData API directly.
+
+## Local Educational Data Fixture Added — 2026-06-30
+
+A local normalized educational fixture now exists at `data/solar-system-educational-data.ts`. It is a seed structure for future facts panels, educational cards, body comparisons, moon summaries, source notes, and reviewed content refreshes.
+
+The fixture is intentionally not wired into any React component, route, Three.js scene code, tour logic, or VR/WebXR behavior yet. Keeping it checked in but unused allows the data shape to be reviewed safely without changing homepage behavior, `/solar-system` behavior, object rendering, object positions, lighting, animation, camera controls, orbit behavior, tour sequencing, or runtime network behavior.
+
+The first seed entries are conservative local records for the Sun, Earth, Mars, and Jupiter. They use broad educational copy already represented by the project and leave measurement-heavy fields empty until values can be sourced and reviewed. The source-note structure can reference Solar System OpenData API, NASA, existing app copy, and manual review, but the current seed entries do not claim that API values have been imported.
+
+Future API-assisted refreshes should run only through an admin-time, build-time, or server-only process that reads the Solar System OpenData bearer token from secret environment variables. Client-side API fetching remains avoided because the API requires bearer-token authentication, and putting that token in browser code or `NEXT_PUBLIC_*` variables would expose it. Avoiding browser fetches also prevents the live app from depending on API availability or response-shape stability at runtime.

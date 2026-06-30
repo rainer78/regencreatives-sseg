@@ -67,8 +67,12 @@ export default function SolarSystem3D() {
         /*--------------------------------------------------------------
          * 2.  LIGHTS & BACKGROUND
          *-------------------------------------------------------------*/
-        scene.add(new THREE.AmbientLight(0x333333))
-        scene.add(new THREE.PointLight(0xffffff, 1.5))
+        scene.add(new THREE.AmbientLight(0x1f2433, 0.65))
+        scene.add(new THREE.HemisphereLight(0x596a8f, 0x080510, 0.35))
+
+        const sunlight = new THREE.PointLight(0xfff2cc, 2.35, 0, 1.2)
+        sunlight.position.set(0, 0, 0)
+        scene.add(sunlight)
 
         // simple star-field
         {
@@ -307,9 +311,32 @@ export default function SolarSystem3D() {
         const orbits: any[] = []
         const allMoons: any[] = []
 
+        const createCelestialMaterial = (color: number) =>
+          new THREE.MeshStandardMaterial({
+            color,
+            roughness: 0.78,
+            metalness: 0.02,
+          })
+
+        const createSunMaterial = (color: number) =>
+          new THREE.MeshStandardMaterial({
+            color,
+            emissive: color,
+            emissiveIntensity: 1.85,
+            roughness: 0.55,
+            metalness: 0,
+          })
+
+        const createMoonMaterial = (color: number) =>
+          new THREE.MeshStandardMaterial({
+            color,
+            roughness: 0.9,
+            metalness: 0,
+          })
+
         planetData.forEach((data, index) => {
           const geometry = new THREE.SphereGeometry(data.radius, 32, 16)
-          const material = new THREE.MeshBasicMaterial({ color: data.color })
+          const material = index === 0 ? createSunMaterial(data.color) : createCelestialMaterial(data.color)
           const planet = new THREE.Mesh(geometry, material)
 
           if (index === 0) {
@@ -342,7 +369,7 @@ export default function SolarSystem3D() {
               const ringsGeometry = new THREE.RingGeometry(data.radius + 0.5, data.radius + 2, 32)
               const ringsMaterial = new THREE.MeshBasicMaterial({
                 color: 0xf6d298,
-                opacity: 0.7,
+                opacity: 0.68,
                 transparent: true,
                 side: THREE.DoubleSide,
               })
@@ -355,7 +382,7 @@ export default function SolarSystem3D() {
             if (moonData[data.name] && moonData[data.name].length > 0) {
               moonData[data.name].forEach((moonInfo: any, moonIndex: number) => {
                 const moonGeometry = new THREE.SphereGeometry(moonInfo.radius, 16, 16)
-                const moonMaterial = new THREE.MeshBasicMaterial({ color: moonInfo.color })
+                const moonMaterial = createMoonMaterial(moonInfo.color)
                 const moon = new THREE.Mesh(moonGeometry, moonMaterial)
 
                 moon.position.x = moonInfo.distance

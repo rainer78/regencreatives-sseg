@@ -217,3 +217,13 @@ The first visual upgrade keeps the existing procedural scene structure and chang
 No assets, textures, GLB/GLTF models, dependencies, or API behavior were added or changed. The implementation preserves existing positions, scale values, orbit behavior, camera behavior, animation behavior, tour sequencing, loading behavior, VR/WebXR setup, and celestial object counts.
 
 Manual review should verify that planets remain visible on mobile-sized screens, the Sun is visually distinct without overpowering nearby objects, orbit paths remain readable, Saturn's ring still functions as a simple silhouette cue, and the asteroid belt/Oort Cloud performance profile is not worsened by this targeted pass.
+
+## Implementation note: Jupiter text-only procedural texture pilot (2026-07-01)
+
+Jupiter now uses a lightweight text-only procedural texture generated at runtime with browser canvas primitives and `THREE.CanvasTexture`. The pilot is scoped to the existing Jupiter mesh/material creation path in `components/solar-system-3d.tsx` and adds horizontal gas-giant banding with warm cream, tan, orange, muted brown, and soft red tones, including a subtle Great Red Spot-like oval.
+
+No binary assets, local image textures, runtime external texture URLs, API fetching, dependencies, shaders, post-processing, particles, extra meshes, atmosphere effects, glow shells, normal maps, bump maps, or specular maps were added. Only Jupiter receives this generated texture through the existing `data.name === "Jupiter"` identity check pattern; all other planets, dwarf planets, moons, Saturn's rings, asteroid belt objects, Oort Cloud objects, labels, overlays, facts panels, walkthroughs, and tours continue through their existing paths.
+
+Earth's procedural `CanvasTexture` treatment and the Sun's procedural visual treatment remain unchanged. Jupiter keeps its existing fallback color/material if canvas texture creation fails. The change preserves existing Jupiter position, radius/scale, orbit behavior, rotation behavior, camera/orbit controls, facts-panel behavior, Solar System Tour behavior, Controls Walkthrough behavior, VR/WebXR behavior, object counts, loading behavior, and educational data.
+
+Manual browser QA is required to confirm the banding and oval read clearly on desktop and mobile without harming scene performance or object readability.

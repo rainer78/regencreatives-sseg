@@ -266,47 +266,59 @@ export default function SolarSystemPage() {
       {/* Solar System Tour UI controlled by the Three.js scene */}
       <div
         id="tour-ui"
-        className="fixed left-1/2 top-1/2 z-40 max-h-[82vh] w-[calc(100vw-1.5rem)] max-w-md -translate-x-1/2 -translate-y-1/2 transform overflow-y-auto"
+        className="fixed inset-0 z-[60] h-screen w-screen overflow-y-auto bg-gradient-to-t from-slate-950/90 via-slate-950/35 to-transparent p-3 text-white backdrop-blur-[1px] sm:p-6"
         style={{ display: "none" }}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="tour-title"
+        aria-describedby="tour-description"
       >
-        <div className="bg-gradient-to-br from-slate-900/98 via-slate-800/98 to-slate-900/98 backdrop-blur-xl text-white p-5 rounded-3xl sm:p-8 border border-slate-700/50 shadow-2xl">
-          <div className="text-center mb-6">
-            <div className="flex items-center justify-center gap-3 mb-4">
-              <div className="w-4 h-4 bg-gradient-to-r from-yellow-400 to-orange-400 rounded-full animate-pulse shadow-lg shadow-yellow-400/50"></div>
-              <h3
-                id="tour-title"
-                className="text-2xl font-bold bg-gradient-to-r from-yellow-400 to-orange-400 bg-clip-text text-transparent"
-              ></h3>
+        <div className="flex min-h-full w-full items-end justify-center py-4 sm:items-center sm:py-8">
+          <section className="w-full max-w-3xl rounded-3xl border border-yellow-300/25 bg-slate-950/82 p-4 shadow-2xl shadow-black/40 backdrop-blur-xl sm:p-6 lg:p-8">
+            <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+              <div>
+                <p className="mb-2 text-xs font-bold uppercase tracking-[0.28em] text-yellow-300/90">Solar System Tour</p>
+                <h3
+                  id="tour-title"
+                  className="text-2xl font-bold bg-gradient-to-r from-yellow-300 to-orange-300 bg-clip-text text-transparent sm:text-3xl"
+                ></h3>
+              </div>
+              <div
+                id="tour-progress"
+                className="w-fit rounded-full border border-blue-300/30 bg-blue-950/55 px-4 py-2 text-sm font-semibold text-blue-100"
+                aria-live="polite"
+              ></div>
             </div>
-            <p id="tour-description" className="text-gray-300 leading-relaxed mb-6"></p>
-            <div
-              id="tour-progress"
-              className="text-sm text-blue-300 font-medium bg-slate-800/50 px-4 py-2 rounded-xl border border-slate-600/30"
-            ></div>
-          </div>
 
-          <div className="flex flex-col justify-between gap-3 sm:flex-row">
-            <button
-              id="tour-prev"
-              className="px-4 py-3 bg-gradient-to-r from-gray-600 to-gray-700 text-white rounded-xl hover:from-gray-700 hover:to-gray-800 transform hover:scale-105 active:scale-95 transition-all duration-200 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed font-medium"
-            >
-              ⬅️ Previous
-            </button>
+            <p id="tour-description" className="mb-5 max-w-2xl text-base leading-relaxed text-slate-100 sm:text-lg"></p>
+            <p className="mb-6 text-sm text-slate-300">Use the tour controls to move through each stop while the 3D scene remains visible behind this guided mode.</p>
 
-            <button
-              id="tour-end"
-              className="px-4 py-3 bg-gradient-to-r from-red-600 to-red-700 text-white rounded-xl hover:from-red-700 hover:to-red-800 transform hover:scale-105 active:scale-95 transition-all duration-200 shadow-lg hover:shadow-red-500/25 font-medium"
-            >
-              🛑 End Tour
-            </button>
+            <div className="grid gap-3 sm:grid-cols-[1fr_auto_1fr] sm:items-center">
+              <button
+                id="tour-prev"
+                aria-label="Go to previous Solar System Tour stop"
+                className="min-h-12 rounded-xl bg-slate-700/90 px-4 py-3 font-medium text-white shadow-lg transition-all duration-200 hover:scale-[1.02] hover:bg-slate-600 focus:outline-none focus:ring-2 focus:ring-yellow-300 focus:ring-offset-2 focus:ring-offset-slate-950 active:scale-95"
+              >
+                ⬅️ Previous
+              </button>
 
-            <button
-              id="tour-next"
-              className="px-4 py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-xl hover:from-blue-700 hover:to-blue-800 transform hover:scale-105 active:scale-95 transition-all duration-200 shadow-lg hover:shadow-blue-500/25 font-medium"
-            >
-              Next ➡️
-            </button>
-          </div>
+              <button
+                id="tour-end"
+                aria-label="End Solar System Tour"
+                className="min-h-12 rounded-xl bg-gradient-to-r from-red-600 to-red-700 px-5 py-3 font-bold text-white shadow-lg shadow-red-950/40 transition-all duration-200 hover:scale-[1.02] hover:from-red-500 hover:to-red-600 focus:outline-none focus:ring-2 focus:ring-red-200 focus:ring-offset-2 focus:ring-offset-slate-950 active:scale-95"
+              >
+                🛑 End Tour
+              </button>
+
+              <button
+                id="tour-next"
+                aria-label="Go to next Solar System Tour stop"
+                className="min-h-12 rounded-xl bg-gradient-to-r from-blue-600 to-blue-700 px-4 py-3 font-medium text-white shadow-lg shadow-blue-950/40 transition-all duration-200 hover:scale-[1.02] hover:from-blue-500 hover:to-blue-600 focus:outline-none focus:ring-2 focus:ring-yellow-300 focus:ring-offset-2 focus:ring-offset-slate-950 active:scale-95"
+              >
+                Next ➡️
+              </button>
+            </div>
+          </section>
         </div>
       </div>
 

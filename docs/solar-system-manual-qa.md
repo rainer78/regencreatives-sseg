@@ -61,10 +61,15 @@ Keep these names distinct in UI copy, code comments, QA notes, and future docume
 ## Solar System Tour
 
 - [ ] The celestial-body Solar System Tour is visually and textually distinct from the Controls Walkthrough.
+- [ ] Starting the Solar System Tour opens a full-screen guided mode overlay.
+- [ ] The 3D scene remains visible behind the translucent tour overlay while the tour is active.
+- [ ] Tour behavior, camera sequencing, camera positions, scene rendering, object counts, and planet visuals are unchanged by the overlay.
 - [ ] Tour content is readable at all required viewport sizes.
 - [ ] Tour controls such as start, previous, next, and end/close work when present.
 - [ ] Tour buttons are reachable by touch and keyboard.
+- [ ] The End Tour control is easy to find on desktop, mobile portrait, mobile landscape, and tablet.
 - [ ] On mobile, tour buttons stack or wrap safely without clipping.
+- [ ] Manual QA includes desktop, mobile portrait, mobile landscape, and tablet viewport checks.
 - [ ] The tour can be ended or exited, and the user is not trapped.
 
 ## Controls Walkthrough / Help Launcher

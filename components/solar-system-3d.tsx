@@ -517,6 +517,78 @@ export default function SolarSystem3D() {
           return material
         }
 
+        const createSaturnMaterial = (color: number) => {
+          const material = createCelestialMaterial(color)
+
+          try {
+            const canvas = document.createElement("canvas")
+            canvas.width = 512
+            canvas.height = 256
+
+            const context = canvas.getContext("2d")
+            if (!context) return material
+
+            const baseGradient = context.createLinearGradient(0, 0, 0, canvas.height)
+            baseGradient.addColorStop(0, "#f4dfad")
+            baseGradient.addColorStop(0.42, "#e6c78f")
+            baseGradient.addColorStop(0.72, "#d8b277")
+            baseGradient.addColorStop(1, "#f1d8a3")
+            context.fillStyle = baseGradient
+            context.fillRect(0, 0, canvas.width, canvas.height)
+
+            const bands = [
+              { y: 0, height: 24, color: "rgba(255, 239, 191, 0.58)" },
+              { y: 24, height: 22, color: "rgba(198, 150, 87, 0.2)" },
+              { y: 46, height: 30, color: "rgba(247, 224, 174, 0.5)" },
+              { y: 76, height: 18, color: "rgba(170, 122, 72, 0.18)" },
+              { y: 94, height: 34, color: "rgba(236, 201, 141, 0.36)" },
+              { y: 128, height: 20, color: "rgba(255, 244, 207, 0.42)" },
+              { y: 148, height: 32, color: "rgba(191, 139, 80, 0.18)" },
+              { y: 180, height: 28, color: "rgba(245, 221, 169, 0.44)" },
+              { y: 208, height: 22, color: "rgba(166, 118, 73, 0.16)" },
+              { y: 230, height: 26, color: "rgba(250, 232, 188, 0.52)" },
+            ]
+
+            bands.forEach((band, bandIndex) => {
+              const wave = Math.sin(bandIndex * 1.35) * 4
+              context.fillStyle = band.color
+              context.beginPath()
+              context.moveTo(0, band.y + wave)
+              context.bezierCurveTo(150, band.y - 4 - wave, 320, band.y + 6 + wave, 512, band.y + wave)
+              context.lineTo(512, band.y + band.height - wave)
+              context.bezierCurveTo(350, band.y + band.height + 5 + wave, 160, band.y + band.height - 6 - wave, 0, band.y + band.height + wave)
+              context.closePath()
+              context.fill()
+            })
+
+            context.globalCompositeOperation = "multiply"
+            for (let y = 10; y < canvas.height; y += 16) {
+              const lineOffset = Math.sin(y * 0.08) * 5
+              context.strokeStyle = y % 32 === 0 ? "rgba(120, 83, 49, 0.08)" : "rgba(255, 245, 218, 0.12)"
+              context.lineWidth = y % 32 === 0 ? 2 : 1
+              context.beginPath()
+              context.moveTo(0, y + lineOffset)
+              context.bezierCurveTo(128, y - 3 - lineOffset, 270, y + 4 + lineOffset, 512, y - lineOffset)
+              context.stroke()
+            }
+            context.globalCompositeOperation = "source-over"
+
+            const saturnTexture = new THREE.CanvasTexture(canvas)
+            saturnTexture.colorSpace = THREE.SRGBColorSpace
+            saturnTexture.needsUpdate = true
+
+            material.map = saturnTexture
+            material.color.set(0xffffff)
+            material.needsUpdate = true
+          } catch {
+            material.map = null
+            material.color.set(color)
+            material.needsUpdate = true
+          }
+
+          return material
+        }
+
         const createSunMaterial = (color: number) => {
           const material = new THREE.MeshStandardMaterial({
             color,
@@ -613,7 +685,9 @@ export default function SolarSystem3D() {
                 ? createEarthMaterial(data.color)
                 : data.name === "Jupiter"
                   ? createJupiterMaterial(data.color)
-                  : createCelestialMaterial(data.color)
+                  : data.name === "Saturn"
+                    ? createSaturnMaterial(data.color)
+                    : createCelestialMaterial(data.color)
           const planet = new THREE.Mesh(geometry, material)
 
           if (index === 0) {
@@ -645,8 +719,8 @@ export default function SolarSystem3D() {
             if (data.name === "Saturn") {
               const ringsGeometry = new THREE.RingGeometry(data.radius + 0.5, data.radius + 2, 32)
               const ringsMaterial = new THREE.MeshBasicMaterial({
-                color: 0xf6d298,
-                opacity: 0.68,
+                color: 0xf2d6a3,
+                opacity: 0.72,
                 transparent: true,
                 side: THREE.DoubleSide,
               })

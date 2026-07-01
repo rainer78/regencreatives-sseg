@@ -227,3 +227,13 @@ No binary assets, local image textures, runtime external texture URLs, API fetch
 Earth's procedural `CanvasTexture` treatment and the Sun's procedural visual treatment remain unchanged. Jupiter keeps its existing fallback color/material if canvas texture creation fails. The change preserves existing Jupiter position, radius/scale, orbit behavior, rotation behavior, camera/orbit controls, facts-panel behavior, Solar System Tour behavior, Controls Walkthrough behavior, VR/WebXR behavior, object counts, loading behavior, and educational data.
 
 Manual browser QA is required to confirm the banding and oval read clearly on desktop and mobile without harming scene performance or object readability.
+
+## Implementation note: Saturn text-only procedural texture pilot (2026-07-01)
+
+Saturn now uses a lightweight text-only procedural planet texture generated at runtime with browser canvas primitives and `THREE.CanvasTexture`. The pilot is scoped to the existing Saturn mesh/material creation path in `components/solar-system-3d.tsx` and adds soft horizontal gas-giant banding with pale gold, cream, muted tan, and light brown tones. The treatment is intentionally softer and lower contrast than Jupiter's procedural texture.
+
+Saturn's existing ring geometry and child attachment are preserved. The existing single ring mesh remains attached to Saturn with the same `RingGeometry` dimensions, orientation, scale, and relationship to the planet; only its material color and opacity were conservatively tuned so the ring remains readable without overpowering the planet.
+
+No binary assets, image textures, runtime external texture URLs, API fetching, dependencies, shaders, post-processing, particle systems, glow shells, atmosphere effects, extra meshes, new ring geometry, normal maps, bump maps, or specular maps were added. Only Saturn receives this generated texture through the existing `data.name === "Saturn"` identity check path. Earth, the Sun, and Jupiter keep their existing procedural treatments unchanged, and no other planets, moons, asteroid belt objects, Oort Cloud objects, orbit paths, labels, overlays, facts panels, walkthroughs, tours, camera behavior, VR/WebXR behavior, loading behavior, positions, scale/radius values, orbit behavior, animation behavior, educational data, or object counts were intentionally changed.
+
+This is the final planet visual pilot for now. Manual browser QA is required before any additional visual upgrades are considered, with special attention to Saturn readability, ring subtlety, unchanged interactions, and performance on desktop and mobile browsers.

@@ -425,14 +425,85 @@ export default function SolarSystem3D() {
           return material
         }
 
-        const createSunMaterial = (color: number) =>
-          new THREE.MeshStandardMaterial({
+        const createSunMaterial = (color: number) => {
+          const material = new THREE.MeshStandardMaterial({
             color,
             emissive: color,
             emissiveIntensity: 1.85,
             roughness: 0.55,
             metalness: 0,
           })
+
+          try {
+            const canvas = document.createElement("canvas")
+            canvas.width = 512
+            canvas.height = 256
+
+            const context = canvas.getContext("2d")
+            if (!context) return material
+
+            const centerX = canvas.width / 2
+            const centerY = canvas.height / 2
+            const radialGradient = context.createRadialGradient(centerX, centerY, 18, centerX, centerY, centerX)
+            radialGradient.addColorStop(0, "#fff7a8")
+            radialGradient.addColorStop(0.32, "#ffd84a")
+            radialGradient.addColorStop(0.68, "#f38a1f")
+            radialGradient.addColorStop(1, "#b64018")
+            context.fillStyle = radialGradient
+            context.fillRect(0, 0, canvas.width, canvas.height)
+
+            context.globalCompositeOperation = "multiply"
+            for (let y = 0; y < canvas.height; y += 12) {
+              const waveOffset = Math.sin(y * 0.09) * 18
+              const bandGradient = context.createLinearGradient(0, y, canvas.width, y + 18)
+              bandGradient.addColorStop(0, "rgba(255, 174, 34, 0.12)")
+              bandGradient.addColorStop(0.5, "rgba(191, 63, 18, 0.18)")
+              bandGradient.addColorStop(1, "rgba(255, 223, 85, 0.1)")
+              context.fillStyle = bandGradient
+              context.beginPath()
+              context.moveTo(0, y + waveOffset)
+              context.bezierCurveTo(128, y - 18 - waveOffset, 256, y + 28 + waveOffset, 512, y - waveOffset)
+              context.lineTo(512, y + 10 - waveOffset)
+              context.bezierCurveTo(384, y + 32 + waveOffset, 128, y - 4 - waveOffset, 0, y + 14 + waveOffset)
+              context.closePath()
+              context.fill()
+            }
+
+            context.globalCompositeOperation = "screen"
+            for (let i = 0; i < 90; i++) {
+              const x = (i * 67) % canvas.width
+              const y = (i * 41) % canvas.height
+              const radius = 10 + ((i * 11) % 28)
+              const spotGradient = context.createRadialGradient(x, y, 0, x, y, radius)
+              spotGradient.addColorStop(0, "rgba(255, 245, 156, 0.34)")
+              spotGradient.addColorStop(0.55, "rgba(255, 147, 43, 0.15)")
+              spotGradient.addColorStop(1, "rgba(255, 147, 43, 0)")
+              context.fillStyle = spotGradient
+              context.beginPath()
+              context.arc(x, y, radius, 0, Math.PI * 2)
+              context.fill()
+            }
+            context.globalCompositeOperation = "source-over"
+
+            const sunTexture = new THREE.CanvasTexture(canvas)
+            sunTexture.colorSpace = THREE.SRGBColorSpace
+            sunTexture.needsUpdate = true
+
+            material.map = sunTexture
+            material.emissiveMap = sunTexture
+            material.color.set(0xffffff)
+            material.emissive.set(0xffa51f)
+            material.needsUpdate = true
+          } catch {
+            material.map = null
+            material.emissiveMap = null
+            material.color.set(color)
+            material.emissive.set(color)
+            material.needsUpdate = true
+          }
+
+          return material
+        }
 
         const createMoonMaterial = (color: number) =>
           new THREE.MeshStandardMaterial({

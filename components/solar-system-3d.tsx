@@ -425,6 +425,98 @@ export default function SolarSystem3D() {
           return material
         }
 
+        const createJupiterMaterial = (color: number) => {
+          const material = createCelestialMaterial(color)
+
+          try {
+            const canvas = document.createElement("canvas")
+            canvas.width = 512
+            canvas.height = 256
+
+            const context = canvas.getContext("2d")
+            if (!context) return material
+
+            context.fillStyle = "#d9c1a0"
+            context.fillRect(0, 0, canvas.width, canvas.height)
+
+            const bands = [
+              { y: 0, height: 20, color: "#efe0c1" },
+              { y: 20, height: 18, color: "#c9905f" },
+              { y: 38, height: 25, color: "#f3dfb8" },
+              { y: 63, height: 17, color: "#9f6848" },
+              { y: 80, height: 30, color: "#e4b177" },
+              { y: 110, height: 16, color: "#f1dcc2" },
+              { y: 126, height: 22, color: "#b87752" },
+              { y: 148, height: 32, color: "#ead1a7" },
+              { y: 180, height: 18, color: "#8f674f" },
+              { y: 198, height: 27, color: "#d99b63" },
+              { y: 225, height: 31, color: "#f0dfc4" },
+            ]
+
+            bands.forEach((band, bandIndex) => {
+              const wave = Math.sin(bandIndex * 1.7) * 8
+              context.fillStyle = band.color
+              context.beginPath()
+              context.moveTo(0, band.y + wave)
+              context.bezierCurveTo(128, band.y - 8 - wave, 250, band.y + 12 + wave, 512, band.y + wave)
+              context.lineTo(512, band.y + band.height - wave)
+              context.bezierCurveTo(
+                360,
+                band.y + band.height + 10 + wave,
+                160,
+                band.y + band.height - 12 - wave,
+                0,
+                band.y + band.height + wave,
+              )
+              context.closePath()
+              context.fill()
+            })
+
+            context.globalCompositeOperation = "multiply"
+            for (let y = 12; y < canvas.height; y += 18) {
+              const lineOffset = Math.sin(y * 0.13) * 14
+              context.strokeStyle = y % 36 === 0 ? "rgba(94, 54, 35, 0.16)" : "rgba(255, 245, 214, 0.2)"
+              context.lineWidth = y % 36 === 0 ? 3 : 2
+              context.beginPath()
+              context.moveTo(0, y + lineOffset)
+              context.bezierCurveTo(128, y - 7 - lineOffset, 260, y + 9 + lineOffset, 512, y - lineOffset)
+              context.stroke()
+            }
+            context.globalCompositeOperation = "source-over"
+
+            const spotX = 356
+            const spotY = 142
+            const spotGradient = context.createRadialGradient(spotX, spotY, 4, spotX, spotY, 42)
+            spotGradient.addColorStop(0, "rgba(190, 80, 55, 0.78)")
+            spotGradient.addColorStop(0.5, "rgba(177, 91, 64, 0.55)")
+            spotGradient.addColorStop(1, "rgba(177, 91, 64, 0)")
+            context.fillStyle = spotGradient
+            context.beginPath()
+            context.ellipse(spotX, spotY, 46, 19, -0.08, 0, Math.PI * 2)
+            context.fill()
+
+            context.strokeStyle = "rgba(111, 58, 43, 0.28)"
+            context.lineWidth = 3
+            context.beginPath()
+            context.ellipse(spotX, spotY, 49, 21, -0.08, 0, Math.PI * 2)
+            context.stroke()
+
+            const jupiterTexture = new THREE.CanvasTexture(canvas)
+            jupiterTexture.colorSpace = THREE.SRGBColorSpace
+            jupiterTexture.needsUpdate = true
+
+            material.map = jupiterTexture
+            material.color.set(0xffffff)
+            material.needsUpdate = true
+          } catch {
+            material.map = null
+            material.color.set(color)
+            material.needsUpdate = true
+          }
+
+          return material
+        }
+
         const createSunMaterial = (color: number) => {
           const material = new THREE.MeshStandardMaterial({
             color,
@@ -519,7 +611,9 @@ export default function SolarSystem3D() {
               ? createSunMaterial(data.color)
               : data.name === "Earth"
                 ? createEarthMaterial(data.color)
-                : createCelestialMaterial(data.color)
+                : data.name === "Jupiter"
+                  ? createJupiterMaterial(data.color)
+                  : createCelestialMaterial(data.color)
           const planet = new THREE.Mesh(geometry, material)
 
           if (index === 0) {

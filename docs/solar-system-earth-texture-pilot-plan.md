@@ -155,3 +155,20 @@ Add one locally checked-in, properly attributed NASA Earth diffuse texture pilot
 4. Update `components/solar-system-3d.tsx` to load the local texture and apply it only to the existing Earth mesh through the current material-helper pattern.
 5. Preserve all Earth position, scale, orbit, camera, tour, Moon, object-count, loading, VR/WebXR, homepage, dependency, and educational-data behavior.
 6. Run the production build and a browser manual QA pass, then document the result with screenshots and a short performance note.
+
+## Implementation Note - 2026-07-01
+
+The originally planned local binary Earth texture pilot for `/solar-system` was blocked by PR/review tooling because binary image assets cannot be represented in the current review environment. The binary `public/solar-system/textures/earth-diffuse-1024.webp` asset and its asset-specific attribution note were removed from the branch.
+
+The current pilot is a text-only procedural Earth texture implementation:
+
+- No binary image asset is included.
+- No `.webp`, `.jpg`, `.png`, `.svg`, or other image texture file is required.
+- No `public/solar-system/textures` asset is required for the current implementation.
+- No `THREE.TextureLoader` call, CDN texture URL, runtime external texture dependency, API fetch, client-side secret, or API token is used.
+- Earth receives a generated `THREE.CanvasTexture` only when `data.name === "Earth"` in the existing planet creation loop.
+- The generated texture is intentionally lightweight: a small canvas with a blue ocean base, simple green/tan land-like polygons, and a few subtle white cloud-like strokes.
+- Earth keeps its existing fallback color (`0x2233ff`) if procedural texture creation fails.
+- Only Earth is visually affected by this pilot; non-Earth planets, moons, the Sun, Saturn's ring, asteroid belt, Oort Cloud objects, orbit paths, labels, overlays, facts panels, homepage, tour controls, camera behavior, VR/WebXR behavior, educational data, object counts, positions, scale, orbit behavior, and animation behavior remain unchanged by this implementation.
+- This is a temporary visual pilot and not a final NASA/Blue Marble texture implementation. A reviewed local NASA texture can be reconsidered only if the PR/review workflow supports binary assets or an approved non-binary asset strategy.
+- Manual browser QA is still required to visually confirm the procedural Earth texture and verify unchanged interaction behavior.

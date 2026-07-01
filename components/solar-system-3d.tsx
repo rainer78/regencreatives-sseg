@@ -318,6 +318,113 @@ export default function SolarSystem3D() {
             metalness: 0.02,
           })
 
+        const createEarthMaterial = (color: number) => {
+          const material = createCelestialMaterial(color)
+
+          try {
+            const canvas = document.createElement("canvas")
+            canvas.width = 512
+            canvas.height = 256
+
+            const context = canvas.getContext("2d")
+            if (!context) return material
+
+            context.fillStyle = "#1f5fbf"
+            context.fillRect(0, 0, canvas.width, canvas.height)
+
+            const drawLandShape = (points: Array<[number, number]>, fillStyle: string) => {
+              context.beginPath()
+              points.forEach(([x, y], pointIndex) => {
+                if (pointIndex === 0) {
+                  context.moveTo(x, y)
+                } else {
+                  context.lineTo(x, y)
+                }
+              })
+              context.closePath()
+              context.fillStyle = fillStyle
+              context.fill()
+            }
+
+            drawLandShape(
+              [
+                [96, 58],
+                [142, 46],
+                [176, 72],
+                [168, 112],
+                [132, 130],
+                [90, 104],
+              ],
+              "#5f8f45",
+            )
+            drawLandShape(
+              [
+                [156, 126],
+                [190, 148],
+                [182, 212],
+                [146, 226],
+                [122, 188],
+                [134, 148],
+              ],
+              "#6f9f50",
+            )
+            drawLandShape(
+              [
+                [258, 70],
+                [326, 48],
+                [394, 72],
+                [420, 120],
+                [368, 140],
+                [302, 122],
+              ],
+              "#8f9f5a",
+            )
+            drawLandShape(
+              [
+                [320, 126],
+                [370, 138],
+                [398, 184],
+                [362, 226],
+                [318, 206],
+                [298, 158],
+              ],
+              "#b49a58",
+            )
+            drawLandShape(
+              [
+                [418, 156],
+                [462, 166],
+                [482, 202],
+                [442, 218],
+              ],
+              "#7da852",
+            )
+
+            context.strokeStyle = "rgba(255, 255, 255, 0.45)"
+            context.lineWidth = 3
+            ;[42, 128, 244, 356].forEach((x) => {
+              context.beginPath()
+              context.moveTo(x, 70)
+              context.bezierCurveTo(x + 34, 52, x + 62, 84, x + 98, 66)
+              context.stroke()
+            })
+
+            const earthTexture = new THREE.CanvasTexture(canvas)
+            earthTexture.colorSpace = THREE.SRGBColorSpace
+            earthTexture.needsUpdate = true
+
+            material.map = earthTexture
+            material.color.set(0xffffff)
+            material.needsUpdate = true
+          } catch {
+            material.map = null
+            material.color.set(color)
+            material.needsUpdate = true
+          }
+
+          return material
+        }
+
         const createSunMaterial = (color: number) =>
           new THREE.MeshStandardMaterial({
             color,
@@ -336,7 +443,12 @@ export default function SolarSystem3D() {
 
         planetData.forEach((data, index) => {
           const geometry = new THREE.SphereGeometry(data.radius, 32, 16)
-          const material = index === 0 ? createSunMaterial(data.color) : createCelestialMaterial(data.color)
+          const material =
+            index === 0
+              ? createSunMaterial(data.color)
+              : data.name === "Earth"
+                ? createEarthMaterial(data.color)
+                : createCelestialMaterial(data.color)
           const planet = new THREE.Mesh(geometry, material)
 
           if (index === 0) {
